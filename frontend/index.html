@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Service - Online Order Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="env.js"></script>
+</head>
+
+<body>
+    <!-- Background Animation -->
+    <div class="background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="url(#logo-gradient)" />
+                    <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" stroke="white" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0" y1="0" x2="32" y2="32">
+                            <stop offset="0%" stop-color="#667eea" />
+                            <stop offset="100%" stop-color="#764ba2" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Order Management System</span>
+            </div>
+            <div class="header-status">
+                <div class="status-indicator" id="apiStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Checking API...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Welcome Section (shown when not logged in) -->
+            <section class="welcome-section" id="welcomeSection">
+                <div class="hero">
+                    <h1 class="hero-title">
+                        Welcome to Your
+                        <span class="gradient-text">Microservice</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Your Auth Service is running on AWS! Register or login to see it in action.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">🚀</div>
+                            <div class="stat-value">Live on AWS</div>
+                            <div class="stat-label">ECS Deployment</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔒</div>
+                            <div class="stat-value">JWT Auth</div>
+                            <div class="stat-label">Secure Tokens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-value">High Availability</div>
+                            <div class="stat-label">Multi-AZ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth Forms -->
+                <div class="auth-container">
+                    <!-- Login Form -->
+                    <div class="auth-card" id="loginCard">
+                        <h2 class="card-title">Login</h2>
+                        <form id="loginForm" class="auth-form">
+                            <div class="form-group">
+                                <label for="loginEmail">Email</label>
+                                <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">Login</span>
+                                <span class="btn-loader"></span>
+                            </button>
+                        </form>
+                        <p class="card-footer">
+                            Don't have an account?
+                            <a href="#" id="showRegister" class="link">Register here</a>
+                        </p>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div class="auth-card hidden" id="registerCard">
+                        <h2 class="card-title">Create Account</h2>
+                        <form id="registerForm" class="auth-form">
+                            <div class="form-group">
+                                <label for="registerUsername">Username</label>
+                                <input type="text" id="registerUsername" placeholder="johndoe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerEmail">Email</label>
+                                <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPassword">Password</label>
+                                <input type="password" id="registerPassword" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">Create Account</span>
+                                <span class="btn-loader"></span>
+                            </button>
+                        </form>
+                        <p class="card-footer">
+                            Already have an account?
+                            <a href="#" id="showLogin" class="link">Login here</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Section (shown when logged in) -->
+            <section class="dashboard-section hidden" id="dashboardSection">
+                <div class="dashboard-header">
+                    <div>
+                        <h1 class="dashboard-title">Welcome back, <span id="userName"></span>! 👋</h1>
+                        <p class="dashboard-subtitle">Your Auth Service is working perfectly</p>
+                    </div>
+                    <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- User Profile Card -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Your Profile</h3>
+                            <span class="badge badge-success">Active</span>
+                        </div>
+                        <div class="profile-info">
+                            <div class="profile-avatar">
+                                <span id="userInitial"></span>
+                            </div>
+                            <div class="profile-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Username</span>
+                                    <span class="detail-value" id="profileUsername"></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Email</span>
+                                    <span class="detail-value" id="profileEmail"></span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">User ID</span>
+                                    <span class="detail-value" id="profileId"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JWT Token Card -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>JWT Token</h3>
+                            <span class="badge badge-info">Secure</span>
+                        </div>
+                        <div class="token-display">
+                            <code id="tokenDisplay"></code>
+                            <button class="btn btn-small" id="copyTokenBtn">Copy Token</button>
+                        </div>
+                    </div>
+
+                    <!-- API Status Card -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Service Status</h3>
+                        </div>
+                        <div class="status-grid">
+                            <div class="status-item">
+                                <span class="status-icon">✅</span>
+                                <div>
+                                    <div class="status-title">Auth Service</div>
+                                    <div class="status-desc">Running on AWS ECS</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-icon">✅</span>
+                                <div>
+                                    <div class="status-title">Load Balancer</div>
+                                    <div class="status-desc">Healthy</div>
+                                </div>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-icon">✅</span>
+                                <div>
+                                    <div class="status-title">Database</div>
+                                    <div class="status-desc">Connected</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Architecture Card -->
+                    <div class="dashboard-card full-width">
+                        <div class="card-header">
+                            <h3>Your AWS Architecture</h3>
+                        </div>
+                        <div class="architecture-diagram">
+                            <div class="arch-layer">
+                                <div class="arch-box internet">
+                                    <span class="arch-icon">🌐</span>
+                                    <span>Internet</span>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">↓</div>
+                            <div class="arch-layer">
+                                <div class="arch-box alb">
+                                    <span class="arch-icon">⚖️</span>
+                                    <span>Application Load Balancer</span>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">↓</div>
+                            <div class="arch-layer">
+                                <div class="arch-box ecs">
+                                    <span class="arch-icon">🐳</span>
+                                    <span>ECS Service (2 Tasks)</span>
+                                </div>
+                            </div>
+                            <div class="arch-arrow">↓</div>
+                            <div class="arch-layer">
+                                <div class="arch-box db">
+                                    <span class="arch-icon">💾</span>
+                                    <span>Database</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

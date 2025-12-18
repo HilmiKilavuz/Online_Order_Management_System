@@ -1,0 +1,64 @@
+# .dockerignore
+# Files and directories to exclude from Docker build context
+# Similar to .gitignore but for Docker
+
+# Virtual environments (we install fresh in container)
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# SQLite database (local development only)
+*.db
+*.db-journal
+
+# Environment files (secrets should not be in image!)
+.env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Test files (optional - include if you want to run tests in container)
+test-api.ps1
+tests/
+*.test.py
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# Docker files (no need to copy Dockerfile into image)
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+.dockerignore
